@@ -2,7 +2,15 @@
 
 ## Overview
 
-This is a full-stack TypeScript application that simulates sports betting with AI-powered predictions. The application features a React frontend with shadcn/ui components, an Express.js backend, and uses Drizzle ORM with PostgreSQL for data persistence. It includes a betting simulator engine, AI prediction algorithms, and comprehensive user analytics.
+This is a comprehensive full-stack TypeScript sports betting simulator that combines real-time sports data, AI-powered predictions, and sophisticated betting mechanics. The application provides users with a realistic betting experience including bankroll management, AI recommendations, game simulation, and detailed analytics - all without real money transactions.
+
+### Key Features
+- **AI-Powered Predictions**: Uses OpenAI GPT-4o to generate intelligent betting recommendations
+- **Real Sports Data**: Integrates with ESPN Sports API for live NBA, NFL, MLB, and NHL games
+- **Virtual Bankroll**: Users start with $10,000 virtual currency for betting simulation
+- **Comprehensive Analytics**: Tracks win rates, ROI, profit/loss, and betting patterns
+- **Theme Support**: Full dark/light mode with automatic system preference detection
+- **Responsive Design**: Mobile-optimized interface for betting on any device
 
 ## System Architecture
 
@@ -46,14 +54,35 @@ This is a full-stack TypeScript application that simulates sports betting with A
 - **Analytics**: Charts and insights for betting performance
 - **Responsive Design**: Mobile-optimized interface with dark theme
 
-## Data Flow
+## Application Workflow
 
-1. **Game Data**: Mock sports games are created with realistic betting lines
-2. **AI Predictions**: Prediction engine analyzes games and generates recommendations
-3. **User Interaction**: Users view predictions and place bets through the interface
-4. **Bet Processing**: Betting simulator validates and processes wagers
-5. **Game Simulation**: Mock game results are generated for bet resolution
-6. **Analytics**: User statistics and performance metrics are calculated and displayed
+### 1. Data Initialization
+- **Game Data Fetching**: ESPN Sports API provides live game schedules, teams, and basic info
+- **Betting Lines Generation**: Realistic spreads, moneylines, and totals calculated based on team matchups
+- **AI Prediction Generation**: OpenAI analyzes each game to create betting recommendations with confidence scores
+
+### 2. User Experience Flow
+```
+Dashboard → View AI Predictions → Place Bets → Track Results → Analyze Performance
+```
+
+### 3. Betting Process
+1. **Prediction Display**: AI shows recommended picks with edge scores (1-10) and confidence tiers
+2. **Bet Placement**: Users can bet on spreads, moneylines, or totals through quick bet interface
+3. **Bankroll Management**: Virtual currency tracked with each bet, preventing over-betting
+4. **Game Simulation**: Realistic game results generated to determine bet outcomes
+5. **Result Processing**: Wins/losses calculated and bankroll updated accordingly
+
+### 4. Analytics Engine
+- **Real-time Statistics**: Win rate, ROI, total profit/loss, betting streaks
+- **Performance Tracking**: Historical bankroll changes, bet frequency analysis
+- **Insights Generation**: AI-powered betting pattern analysis and recommendations
+
+### 5. Theme System Workflow
+- **System Detection**: Automatically detects user's OS theme preference
+- **Manual Toggle**: Sun/moon icon in header for manual theme switching
+- **Persistence**: Theme choice saved to localStorage for future visits
+- **Dynamic Updates**: All components respond instantly to theme changes
 
 ## External Dependencies
 
@@ -121,6 +150,66 @@ Changelog:
 - **ESPN Sports API**: Free tier integration for live NBA, NFL, MLB, NHL game data
 - **Data Refresh**: Real-time game fetching with realistic betting lines generation
 - **Sports Coverage**: Multi-sport support with sport-specific line calculations
+
+## Technical Implementation Details
+
+### Database Schema
+```sql
+Users Table: id, username, password, bankroll
+Games Table: id, homeTeam, awayTeam, gameTime, sport, homeSpread, awaySpread, homeMoneyline, awayMoneyline, total
+Predictions Table: id, gameId, recommendedPick, betType, edgeScore, confidenceTier, tags, reasoning
+Bets Table: id, userId, gameId, predictionId, amount, pick, odds, status, payout
+```
+
+### API Endpoints
+- `GET /api/user` - User profile and bankroll
+- `GET /api/user/stats` - Betting statistics and performance metrics
+- `GET /api/games` - Available games with betting lines
+- `GET /api/games/predictions` - Games with AI predictions
+- `POST /api/bets` - Place a new bet
+- `GET /api/bets` - User's betting history
+- `GET /api/bets/recent` - Recent bets for dashboard
+
+### AI Prediction Engine
+- **Input Analysis**: Team matchups, historical performance, betting line value
+- **Edge Score Calculation**: Mathematical model rating bet value (1-10 scale)
+- **Confidence Tiers**: Low, Medium, High based on prediction certainty
+- **Tag System**: Categories like "Smart Money", "Fade Public", "Value", "Weather"
+- **Reasoning**: Natural language explanation of prediction logic
+
+### Page Structure
+- **Dashboard**: Overview with stats, recent bets, AI predictions, quick bet form
+- **Predictions**: Detailed AI recommendations with advanced filtering
+- **History**: Complete betting history with profit/loss analysis
+- **Analytics**: Charts and performance metrics
+- **Simulator**: Betting strategy testing tools
+
+## User Guide
+
+### Getting Started
+1. **Initial Setup**: User starts with $10,000 virtual bankroll
+2. **Dashboard Overview**: View current bankroll, recent performance, and AI predictions
+3. **Theme Toggle**: Click sun/moon icon in header to switch between light/dark modes
+
+### Placing Bets
+1. **View Predictions**: AI recommendations show on dashboard with confidence scores
+2. **Quick Bet**: Use right sidebar for fast bet placement
+3. **Bet Types**: Choose from spreads, moneylines, or totals (over/under)
+4. **Amount Selection**: Enter bet amount (cannot exceed current bankroll)
+5. **Confirmation**: Bet is processed immediately and bankroll updated
+
+### Understanding AI Predictions
+- **Edge Score**: 1-10 rating of bet value (higher = better opportunity)
+- **Confidence Tiers**: High/Medium/Low based on prediction certainty
+- **Tags**: Quick indicators like "Smart Money" or "Fade Public"
+- **Reasoning**: AI explanation of why the bet is recommended
+
+### Analytics & Performance
+- **Win Rate**: Percentage of successful bets
+- **ROI**: Return on investment across all bets
+- **Profit/Loss**: Total gains or losses from betting
+- **Bankroll Chart**: Visual representation of balance over time
+- **Streak Tracking**: Current winning or losing streaks
 
 ## User Preferences
 
