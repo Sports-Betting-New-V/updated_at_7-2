@@ -92,11 +92,11 @@ export default function History() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-6">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Card key={i} className="bg-[#1E293B] border-[#334155]">
+              <Card key={i} className="">
                 <CardContent className="p-6">
                   <div className="animate-pulse space-y-4">
-                    <div className="h-6 bg-gray-700 rounded w-3/4"></div>
-                    <div className="h-4 bg-gray-700 rounded w-1/2"></div>
+                    <div className="h-6 bg-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-1/2"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -115,17 +115,17 @@ export default function History() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">Betting History</h1>
-            <p className="text-slate-400 mt-2">Complete record of your betting activity</p>
+            <p className="text-muted-foreground mt-2">Complete record of your betting activity</p>
           </div>
         </div>
 
         {/* Summary Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-[#1E293B] border-[#334155]">
+          <Card className="">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">Total Bets</p>
+                  <p className="text-sm text-muted-foreground">Total Bets</p>
                   <p className="text-2xl font-bold">{filteredAndSortedBets.length}</p>
                 </div>
                 <Calendar className="text-[#1E40AF] text-xl" />
@@ -133,11 +133,11 @@ export default function History() {
             </CardContent>
           </Card>
 
-          <Card className="bg-[#1E293B] border-[#334155]">
+          <Card className="">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">Win Rate</p>
+                  <p className="text-sm text-muted-foreground">Win Rate</p>
                   <p className="text-2xl font-bold">{winRate.toFixed(1)}%</p>
                 </div>
                 <TrendingUp className="text-[#10B981] text-xl" />
@@ -145,11 +145,11 @@ export default function History() {
             </CardContent>
           </Card>
 
-          <Card className="bg-[#1E293B] border-[#334155]">
+          <Card className="">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">Net Profit/Loss</p>
+                  <p className="text-sm text-muted-foreground">Net Profit/Loss</p>
                   <p className={`text-2xl font-bold ${totalProfit >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
                     {totalProfit >= 0 ? '+' : ''}{formatCurrency(totalProfit)}
                   </p>
@@ -164,24 +164,24 @@ export default function History() {
         </div>
 
         {/* Filters */}
-        <Card className="bg-[#1E293B] border-[#334155] mb-8">
+        <Card className=" mb-8">
           <CardContent className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               <div className="relative">
-                <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-2.5 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder="Search bets..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 bg-[#0F172A] border-[#334155] text-slate-50"
+                  className="pl-10 bg-muted border text-foreground"
                 />
               </div>
 
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-[#0F172A] border-[#334155]">
+                <SelectTrigger className="bg-muted border">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#0F172A] border-[#334155]">
+                <SelectContent className="bg-muted border">
                   <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="won">Won</SelectItem>
                   <SelectItem value="lost">Lost</SelectItem>
@@ -191,10 +191,10 @@ export default function History() {
               </Select>
 
               <Select value={betTypeFilter} onValueChange={setBetTypeFilter}>
-                <SelectTrigger className="bg-[#0F172A] border-[#334155]">
+                <SelectTrigger className="bg-muted border">
                   <SelectValue placeholder="Bet Type" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#0F172A] border-[#334155]">
+                <SelectContent className="bg-muted border">
                   <SelectItem value="all">All Types</SelectItem>
                   <SelectItem value="spread">Spread</SelectItem>
                   <SelectItem value="moneyline">Moneyline</SelectItem>
@@ -204,10 +204,10 @@ export default function History() {
               </Select>
 
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="bg-[#0F172A] border-[#334155]">
+                <SelectTrigger className="bg-muted border">
                   <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
-                <SelectContent className="bg-[#0F172A] border-[#334155]">
+                <SelectContent className="bg-muted border">
                   <SelectItem value="date">Date</SelectItem>
                   <SelectItem value="amount">Amount</SelectItem>
                   <SelectItem value="status">Status</SelectItem>
@@ -222,7 +222,7 @@ export default function History() {
                   setSortBy("date");
                 }}
                 variant="outline"
-                className="bg-[#0F172A] border-[#334155] hover:border-[#1E40AF]"
+                className="bg-muted border hover:border-[#1E40AF]"
               >
                 <Filter className="w-4 h-4 mr-2" />
                 Reset
@@ -232,13 +232,13 @@ export default function History() {
         </Card>
 
         {/* Betting History */}
-        <Card className="bg-[#1E293B] border-[#334155]">
-          <CardHeader className="border-b border-[#334155]">
+        <Card className="">
+          <CardHeader className="border-b border">
             <CardTitle>Bet History ({filteredAndSortedBets.length} bets)</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             {filteredAndSortedBets.length === 0 ? (
-              <div className="text-center py-16 text-slate-400">
+              <div className="text-center py-16 text-muted-foreground">
                 No bets found matching your filters
               </div>
             ) : (
@@ -246,8 +246,8 @@ export default function History() {
                 {filteredAndSortedBets.map((bet, index) => (
                   <div 
                     key={bet.id} 
-                    className={`p-6 border-b border-[#334155] last:border-b-0 hover:bg-[#0F172A] transition-colors ${
-                      index % 2 === 0 ? 'bg-[#0F172A]/30' : ''
+                    className={`p-6 border-b border last:border-b-0 hover:bg-muted transition-colors ${
+                      index % 2 === 0 ? 'bg-muted/30' : ''
                     }`}
                   >
                     <div className="grid grid-cols-1 md:grid-cols-6 gap-4 items-center">
@@ -256,14 +256,14 @@ export default function History() {
                         <div className="font-medium text-sm mb-1">
                           {bet.game.awayTeam} @ {bet.game.homeTeam}
                         </div>
-                        <div className="text-slate-400 text-sm">
+                        <div className="text-muted-foreground text-sm">
                           {bet.pick}
                         </div>
                         <div className="flex items-center space-x-2 mt-1">
                           <Badge className={`text-xs ${getBetTypeColor(bet.betType)}`}>
                             {bet.betType}
                           </Badge>
-                          <span className="text-xs text-slate-500">
+                          <span className="text-xs text-foreground0">
                             {bet.odds > 0 ? `+${bet.odds}` : bet.odds}
                           </span>
                         </div>
@@ -272,7 +272,7 @@ export default function History() {
                       {/* Amount */}
                       <div className="text-center">
                         <div className="font-bold">{formatCurrency(bet.amount)}</div>
-                        <div className="text-xs text-slate-400">Bet Amount</div>
+                        <div className="text-xs text-muted-foreground">Bet Amount</div>
                       </div>
 
                       {/* Status */}
@@ -287,18 +287,18 @@ export default function History() {
                         <div className={`font-bold ${
                           calculateProfitLoss(bet) > 0 ? 'text-[#10B981]' : 
                           calculateProfitLoss(bet) < 0 ? 'text-[#EF4444]' : 
-                          'text-slate-400'
+                          'text-muted-foreground'
                         }`}>
                           {calculateProfitLoss(bet) > 0 ? '+' : ''}
                           {formatCurrency(calculateProfitLoss(bet))}
                         </div>
-                        <div className="text-xs text-slate-400">P&L</div>
+                        <div className="text-xs text-muted-foreground">P&L</div>
                       </div>
 
                       {/* Date */}
                       <div className="text-center">
                         <div className="text-sm">{getTimestamp(new Date(bet.placedAt))}</div>
-                        <div className="text-xs text-slate-400">
+                        <div className="text-xs text-muted-foreground">
                           {new Date(bet.placedAt).toLocaleDateString()}
                         </div>
                       </div>

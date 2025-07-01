@@ -108,14 +108,14 @@ export default function Simulator() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">Betting Simulator</h1>
-            <p className="text-slate-400 mt-2">Simulate game outcomes and see bet results</p>
+            <p className="text-muted-foreground mt-2">Simulate game outcomes and see bet results</p>
           </div>
           
           <div className="flex items-center space-x-4">
             <Button
               onClick={resetSimulation}
               variant="outline"
-              className="bg-[#1E293B] border-[#334155] hover:border-[#1E40AF]"
+              className=" hover:border-[#1E40AF]"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
               Reset
@@ -134,8 +134,8 @@ export default function Simulator() {
 
         {/* Simulation Results */}
         {simulationResults && (
-          <Card className="bg-[#1E293B] border-[#334155] mb-8">
-            <CardHeader className="border-b border-[#334155]">
+          <Card className=" mb-8">
+            <CardHeader className="border-b border">
               <CardTitle className="flex items-center">
                 <Trophy className="w-5 h-5 mr-2 text-[#F59E0B]" />
                 Simulation Results
@@ -145,42 +145,42 @@ export default function Simulator() {
               {simulationResults.multipleGames ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className="bg-[#0F172A] rounded-lg p-4">
+                    <div className="bg-muted rounded-lg p-4">
                       <div className="text-2xl font-bold text-[#10B981]">
                         {simulationResults.totalGames}
                       </div>
-                      <div className="text-sm text-slate-400">Games Simulated</div>
+                      <div className="text-sm text-muted-foreground">Games Simulated</div>
                     </div>
-                    <div className="bg-[#0F172A] rounded-lg p-4">
+                    <div className="bg-muted rounded-lg p-4">
                       <div className="text-2xl font-bold text-[#1E40AF]">
                         {simulationResults.totalUpdatedBets}
                       </div>
-                      <div className="text-sm text-slate-400">Bets Updated</div>
+                      <div className="text-sm text-muted-foreground">Bets Updated</div>
                     </div>
-                    <div className="bg-[#0F172A] rounded-lg p-4">
+                    <div className="bg-muted rounded-lg p-4">
                       <div className="text-2xl font-bold text-[#F59E0B]">
                         {Math.round((simulationResults.totalUpdatedBets / Math.max(simulationResults.totalGames, 1)) * 100) / 100}
                       </div>
-                      <div className="text-sm text-slate-400">Avg Bets/Game</div>
+                      <div className="text-sm text-muted-foreground">Avg Bets/Game</div>
                     </div>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-6">
-                    <div className="bg-[#0F172A] rounded-lg p-4">
+                    <div className="bg-muted rounded-lg p-4">
                       <h4 className="font-medium mb-2">Game Result</h4>
                       <div className="space-y-2">
                         <div className="flex justify-between">
-                          <span className="text-slate-400">Home Score:</span>
+                          <span className="text-muted-foreground">Home Score:</span>
                           <span className="font-bold">{simulationResults.gameResult?.homeScore}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400">Away Score:</span>
+                          <span className="text-muted-foreground">Away Score:</span>
                           <span className="font-bold">{simulationResults.gameResult?.awayScore}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400">Total Points:</span>
+                          <span className="text-muted-foreground">Total Points:</span>
                           <span className="font-bold">
                             {(simulationResults.gameResult?.homeScore || 0) + (simulationResults.gameResult?.awayScore || 0)}
                           </span>
@@ -188,14 +188,14 @@ export default function Simulator() {
                       </div>
                     </div>
                     
-                    <div className="bg-[#0F172A] rounded-lg p-4">
+                    <div className="bg-muted rounded-lg p-4">
                       <h4 className="font-medium mb-2">Betting Impact</h4>
                       <div className="space-y-2">
                         <div className="flex justify-between">
-                          <span className="text-slate-400">Bets Updated:</span>
+                          <span className="text-muted-foreground">Bets Updated:</span>
                           <span className="font-bold text-[#1E40AF]">{simulationResults.updatedBets}</span>
                         </div>
-                        <div className="text-sm text-slate-400">
+                        <div className="text-sm text-muted-foreground">
                           Check your betting history to see win/loss results
                         </div>
                       </div>
@@ -209,8 +209,8 @@ export default function Simulator() {
 
         {/* Pending Bets Summary */}
         {pendingBets && pendingBets.length > 0 && (
-          <Card className="bg-[#1E293B] border-[#334155] mb-8">
-            <CardHeader className="border-b border-[#334155]">
+          <Card className=" mb-8">
+            <CardHeader className="border-b border">
               <CardTitle className="flex items-center">
                 <Target className="w-5 h-5 mr-2 text-[#F59E0B]" />
                 Pending Bets ({pendingBets.length})
@@ -219,7 +219,7 @@ export default function Simulator() {
             <CardContent className="p-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {pendingBets.map((bet) => (
-                  <div key={bet.id} className="bg-[#0F172A] rounded-lg p-4 border border-[#334155]">
+                  <div key={bet.id} className="bg-muted rounded-lg p-4 border border">
                     <div className="flex items-center justify-between mb-2">
                       <div className="font-medium text-sm">
                         {bet.game.homeTeam} vs {bet.game.awayTeam}
@@ -228,7 +228,7 @@ export default function Simulator() {
                         Pending
                       </Badge>
                     </div>
-                    <div className="text-sm text-slate-400 mb-1">
+                    <div className="text-sm text-muted-foreground mb-1">
                       {bet.pick} • {formatCurrency(bet.amount)}
                     </div>
                     <div className="text-xs text-slate-500">
@@ -242,36 +242,36 @@ export default function Simulator() {
         )}
 
         {/* Available Games for Simulation */}
-        <Card className="bg-[#1E293B] border-[#334155]">
-          <CardHeader className="border-b border-[#334155]">
+        <Card className="">
+          <CardHeader className="border-b border">
             <CardTitle>Available Games</CardTitle>
-            <p className="text-sm text-slate-400">Click to simulate individual game results</p>
+            <p className="text-sm text-muted-foreground">Click to simulate individual game results</p>
           </CardHeader>
           <CardContent className="p-6">
             {games?.length === 0 ? (
-              <div className="text-center py-8 text-slate-400">
+              <div className="text-center py-8 text-muted-foreground">
                 No upcoming games available for simulation
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {games?.map((game) => (
-                  <Card key={game.id} className="bg-[#0F172A] border-[#334155] hover:border-[#1E40AF] transition-colors">
+                  <Card key={game.id} className="bg-muted border hover:border-[#1E40AF] transition-colors">
                     <CardContent className="p-4">
                       <div className="space-y-3">
                         <div className="text-center">
                           <div className="font-bold">{game.awayTeam} @ {game.homeTeam}</div>
-                          <div className="text-sm text-slate-400">
+                          <div className="text-sm text-muted-foreground">
                             {new Date(game.gameTime).toLocaleDateString()} • {game.sport}
                           </div>
                         </div>
                         
                         <div className="grid grid-cols-2 gap-2 text-sm">
                           <div>
-                            <span className="text-slate-400">Spread:</span>
+                            <span className="text-muted-foreground">Spread:</span>
                             <div className="font-medium">{game.homeSpread || "N/A"}</div>
                           </div>
                           <div>
-                            <span className="text-slate-400">Total:</span>
+                            <span className="text-muted-foreground">Total:</span>
                             <div className="font-medium">{game.totalPoints || "N/A"}</div>
                           </div>
                         </div>

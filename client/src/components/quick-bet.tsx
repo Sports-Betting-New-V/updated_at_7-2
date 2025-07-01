@@ -96,20 +96,20 @@ export function QuickBet() {
   };
 
   return (
-    <Card className="bg-[#1E293B] border-[#334155]">
-      <CardHeader className="border-b border-[#334155]">
+    <Card className="">
+      <CardHeader className="border-b">
         <CardTitle>Quick Bet</CardTitle>
-        <p className="text-sm text-slate-400">Place a simulated bet</p>
+        <p className="text-sm text-muted-foreground">Place a simulated bet</p>
       </CardHeader>
       
       <CardContent className="p-6 space-y-4">
         <div>
           <Label className="text-sm font-medium mb-2 block">Select Game</Label>
           <Select value={selectedGameId} onValueChange={setSelectedGameId}>
-            <SelectTrigger className="w-full bg-[#0F172A] border-[#334155] text-slate-50">
+            <SelectTrigger className="w-full">
               <SelectValue placeholder="Choose a game..." />
             </SelectTrigger>
-            <SelectContent className="bg-[#0F172A] border-[#334155]">
+            <SelectContent className="">
               {games?.filter(g => g.status === "upcoming").map((game) => (
                 <SelectItem key={game.id} value={game.id.toString()}>
                   {game.awayTeam} @ {game.homeTeam}
@@ -157,10 +157,10 @@ export function QuickBet() {
           <div>
             <Label className="text-sm font-medium mb-2 block">Pick</Label>
             <Select value={pick} onValueChange={setPick}>
-              <SelectTrigger className="w-full bg-[#0F172A] border-[#334155] text-slate-50">
+              <SelectTrigger className="w-full">
                 <SelectValue placeholder="Choose your pick..." />
               </SelectTrigger>
-              <SelectContent className="bg-[#0F172A] border-[#334155]">
+              <SelectContent className="">
                 {getBetOptions().map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -174,7 +174,7 @@ export function QuickBet() {
         <div>
           <Label className="text-sm font-medium mb-2 block">Bet Amount</Label>
           <div className="relative">
-            <span className="absolute left-3 top-2 text-slate-400">$</span>
+            <span className="absolute left-3 top-2 text-muted-foreground">$</span>
             <Input
               type="number"
               value={amount}
@@ -183,7 +183,7 @@ export function QuickBet() {
               placeholder="100"
             />
           </div>
-          <div className="flex justify-between text-xs text-slate-400 mt-1">
+          <div className="flex justify-between text-xs text-muted-foreground mt-1">
             <span>Min: $10</span>
             <span>Available: $12,450</span>
           </div>

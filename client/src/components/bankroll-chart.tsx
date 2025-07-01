@@ -20,12 +20,12 @@ export function BankrollChart() {
 
   if (isLoading) {
     return (
-      <Card className="bg-[#1E293B] border-[#334155]">
+      <Card className="">
         <CardHeader>
           <CardTitle>Bankroll Performance</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-64 bg-[#0F172A] rounded border border-[#334155] animate-pulse"></div>
+          <div className="h-64 bg-muted rounded border border animate-pulse"></div>
         </CardContent>
       </Card>
     );
@@ -37,17 +37,17 @@ export function BankrollChart() {
   })) || [];
 
   return (
-    <Card className="bg-[#1E293B] border-[#334155]">
-      <CardHeader className="border-b border-[#334155]">
+    <Card className="">
+      <CardHeader className="border-b">
         <div className="flex items-center justify-between">
           <div>
             <CardTitle>Bankroll Performance</CardTitle>
-            <p className="text-sm text-slate-400">Your betting journey over time</p>
+            <p className="text-sm text-muted-foreground">Your betting journey over time</p>
           </div>
           <div className="flex space-x-2">
             <Button size="sm" className="bg-[#1E40AF] text-white">30D</Button>
-            <Button size="sm" variant="outline" className="bg-[#0F172A] border-[#334155] hover:border-[#1E40AF]">90D</Button>
-            <Button size="sm" variant="outline" className="bg-[#0F172A] border-[#334155] hover:border-[#1E40AF]">1Y</Button>
+            <Button size="sm" variant="outline" className="bg-muted border hover:border-[#1E40AF]">90D</Button>
+            <Button size="sm" variant="outline" className="bg-muted border hover:border-[#1E40AF]">1Y</Button>
           </div>
         </div>
       </CardHeader>

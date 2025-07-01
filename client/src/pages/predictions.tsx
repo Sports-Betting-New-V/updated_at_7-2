@@ -93,12 +93,12 @@ export default function Predictions() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <Card key={i} className="bg-[#1E293B] border-[#334155]">
+              <Card key={i} className="">
                 <CardContent className="p-6">
                   <div className="animate-pulse space-y-4">
-                    <div className="h-6 bg-gray-700 rounded w-3/4"></div>
-                    <div className="h-4 bg-gray-700 rounded w-1/2"></div>
-                    <div className="h-16 bg-gray-700 rounded"></div>
+                    <div className="h-6 bg-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-1/2"></div>
+                    <div className="h-16 bg-muted rounded"></div>
                   </div>
                 </CardContent>
               </Card>
@@ -117,7 +117,7 @@ export default function Predictions() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold">AI Predictions</h1>
-            <p className="text-slate-400 mt-2">Machine learning powered betting recommendations</p>
+            <p className="text-muted-foreground mt-2">Machine learning powered betting recommendations</p>
           </div>
           
           <div className="flex items-center space-x-4">
@@ -125,7 +125,7 @@ export default function Predictions() {
               onClick={() => generatePredictionsMutation.mutate()}
               disabled={generatePredictionsMutation.isPending}
               variant="outline"
-              className="bg-[#1E293B] border-[#334155] hover:border-[#1E40AF]"
+              className=" hover:border-[#1E40AF]"
             >
               <RefreshCw className={`w-4 h-4 mr-2 ${generatePredictionsMutation.isPending ? 'animate-spin' : ''}`} />
               Generate New
@@ -136,15 +136,15 @@ export default function Predictions() {
         {/* Filters */}
         <div className="flex items-center space-x-4 mb-8">
           <div className="flex items-center space-x-2">
-            <Filter className="w-4 h-4 text-slate-400" />
-            <span className="text-sm text-slate-400">Filters:</span>
+            <Filter className="w-4 h-4 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Filters:</span>
           </div>
           
           <Select value={confidenceFilter} onValueChange={setConfidenceFilter}>
-            <SelectTrigger className="w-48 bg-[#1E293B] border-[#334155]">
+            <SelectTrigger className="w-48 ">
               <SelectValue placeholder="Confidence Level" />
             </SelectTrigger>
-            <SelectContent className="bg-[#1E293B] border-[#334155]">
+            <SelectContent className="">
               <SelectItem value="all">All Confidence</SelectItem>
               <SelectItem value="high">High Confidence</SelectItem>
               <SelectItem value="medium">Medium Confidence</SelectItem>
@@ -153,10 +153,10 @@ export default function Predictions() {
           </Select>
 
           <Select value={sportFilter} onValueChange={setSportFilter}>
-            <SelectTrigger className="w-48 bg-[#1E293B] border-[#334155]">
+            <SelectTrigger className="w-48 ">
               <SelectValue placeholder="Sport" />
             </SelectTrigger>
-            <SelectContent className="bg-[#1E293B] border-[#334155]">
+            <SelectContent className="">
               <SelectItem value="all">All Sports</SelectItem>
               <SelectItem value="NBA">NBA</SelectItem>
               <SelectItem value="NFL">NFL</SelectItem>
@@ -170,8 +170,8 @@ export default function Predictions() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredGames.map((game) =>
             game.predictions.map((prediction) => (
-              <Card key={prediction.id} className="bg-[#1E293B] border-[#334155] hover:border-[#1E40AF] transition-colors">
-                <CardHeader className="border-b border-[#334155]">
+              <Card key={prediction.id} className=" hover:border-[#1E40AF] transition-colors">
+                <CardHeader className="border-b border">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">
                       {game.homeTeam} vs {game.awayTeam}
@@ -180,29 +180,29 @@ export default function Predictions() {
                       {prediction.confidenceTier}
                     </Badge>
                   </div>
-                  <div className="text-sm text-slate-400">
+                  <div className="text-sm text-muted-foreground">
                     {new Date(game.gameTime).toLocaleDateString()} • {game.sport}
                   </div>
                 </CardHeader>
                 
                 <CardContent className="p-6">
                   <div className="space-y-4">
-                    <div className="bg-[#0F172A] rounded-lg p-4 border border-[#334155]">
+                    <div className="bg-muted rounded-lg p-4 border border">
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-slate-400">Recommended Pick</span>
+                        <span className="text-sm text-muted-foreground">Recommended Pick</span>
                         <Star className="w-4 h-4 text-[#F59E0B]" />
                       </div>
                       <div className="font-bold text-[#10B981] text-lg">
                         {prediction.recommendedPick}
                       </div>
-                      <div className="text-sm text-slate-400 capitalize">
+                      <div className="text-sm text-muted-foreground capitalize">
                         {prediction.betType} bet
                       </div>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <div className="text-sm text-slate-400">Edge Score</div>
+                        <div className="text-sm text-muted-foreground">Edge Score</div>
                         <div className="flex items-center">
                           <TrendingUp className="w-4 h-4 text-[#F59E0B] mr-1" />
                           <span className="font-bold text-[#F59E0B]">
@@ -211,7 +211,7 @@ export default function Predictions() {
                         </div>
                       </div>
                       <div>
-                        <div className="text-sm text-slate-400">Suggested Bet</div>
+                        <div className="text-sm text-muted-foreground">Suggested Bet</div>
                         <div className="font-bold">{formatCurrency(100)}</div>
                       </div>
                     </div>
@@ -224,7 +224,7 @@ export default function Predictions() {
                       ))}
                     </div>
                     
-                    <div className="text-sm text-slate-400">
+                    <div className="text-sm text-muted-foreground">
                       {prediction.reasoning}
                     </div>
                     
@@ -244,7 +244,7 @@ export default function Predictions() {
         
         {filteredGames.length === 0 && (
           <div className="text-center py-16">
-            <div className="text-slate-400 mb-4">
+            <div className="text-muted-foreground mb-4">
               No predictions match your current filters
             </div>
             <Button
@@ -253,7 +253,7 @@ export default function Predictions() {
                 setSportFilter("all");
               }}
               variant="outline"
-              className="bg-[#1E293B] border-[#334155] hover:border-[#1E40AF]"
+              className=" hover:border-[#1E40AF]"
             >
               Reset Filters
             </Button>
