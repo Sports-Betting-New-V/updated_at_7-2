@@ -54,8 +54,8 @@ export function RecentBets() {
             </div>
             <div className="text-right">
               <div className={`text-sm font-medium ${
-                bet.status === "won" ? "text-[#10B981]" : 
-                bet.status === "lost" ? "text-[#EF4444]" : 
+                bet.status === "won" ? "text-green-500" : 
+                bet.status === "lost" ? "text-red-500" : 
                 "text-muted-foreground"
               }`}>
                 {bet.status === "won" ? `+${formatCurrency(parseFloat(bet.payout || "0") - parseFloat(bet.amount))}` :
@@ -63,8 +63,8 @@ export function RecentBets() {
                  "Pending"}
               </div>
               <div className={`text-xs capitalize ${
-                bet.status === "won" ? "text-[#10B981]" : 
-                bet.status === "lost" ? "text-[#EF4444]" : 
+                bet.status === "won" ? "text-green-500" : 
+                bet.status === "lost" ? "text-red-500" : 
                 "text-muted-foreground"
               }`}>
                 {bet.status}
@@ -80,7 +80,7 @@ export function RecentBets() {
         )}
         
         <div className="text-center pt-2">
-          <Button variant="ghost" className="text-[#1E40AF] hover:text-blue-400 text-sm">
+          <Button variant="ghost" className="text-blue-600 hover:text-blue-500 text-sm">
             View All Bets
           </Button>
         </div>

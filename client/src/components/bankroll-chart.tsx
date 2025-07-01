@@ -45,7 +45,7 @@ export function BankrollChart() {
             <p className="text-sm text-muted-foreground">Your betting journey over time</p>
           </div>
           <div className="flex space-x-2">
-            <Button size="sm" className="bg-[#1E40AF] text-white">30D</Button>
+            <Button size="sm" className="bg-blue-600 text-white">30D</Button>
             <Button size="sm" variant="outline" className="bg-muted border hover:border-[#1E40AF]">90D</Button>
             <Button size="sm" variant="outline" className="bg-muted border hover:border-[#1E40AF]">1Y</Button>
           </div>

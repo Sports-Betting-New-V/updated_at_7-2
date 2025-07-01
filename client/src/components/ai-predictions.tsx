@@ -46,12 +46,12 @@ export function AIPredictions({ onPlaceBet }: AIPredictionsProps) {
         <div className="flex items-center justify-between">
           <CardTitle>AI Predictions</CardTitle>
           <div className="flex items-center space-x-2">
-            <span className="text-sm text-slate-400">Last updated:</span>
+            <span className="text-sm text-muted-foreground">Last updated:</span>
             <span className="text-sm font-medium">2 min ago</span>
-            <div className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
           </div>
         </div>
-        <p className="text-sm text-slate-400 mt-1">High-confidence picks from our ML engine</p>
+        <p className="text-sm text-muted-foreground mt-1">High-confidence picks from our ML engine</p>
       </CardHeader>
       
       <CardContent className="p-6 space-y-4">
@@ -72,7 +72,7 @@ export function AIPredictions({ onPlaceBet }: AIPredictionsProps) {
                     </Badge>
                   ))}
                 </div>
-                <div className="text-sm text-slate-400">
+                <div className="text-sm text-muted-foreground">
                   {new Date(game.gameTime).toLocaleTimeString([], { 
                     hour: 'numeric', 
                     minute: '2-digit',
@@ -83,25 +83,25 @@ export function AIPredictions({ onPlaceBet }: AIPredictionsProps) {
               
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
-                  <div className="text-sm text-slate-400">Recommended Pick</div>
-                  <div className="font-bold text-[#10B981]">{prediction.recommendedPick}</div>
-                  <div className="text-sm text-slate-400 capitalize">{prediction.betType}</div>
+                  <div className="text-sm text-muted-foreground">Recommended Pick</div>
+                  <div className="font-bold text-green-500">{prediction.recommendedPick}</div>
+                  <div className="text-sm text-muted-foreground capitalize">{prediction.betType}</div>
                 </div>
                 <div>
-                  <div className="text-sm text-slate-400">Edge Score</div>
-                  <div className="font-bold text-[#F59E0B]">{prediction.edgeScore}/10</div>
-                  <div className="text-sm text-slate-400">Strong value</div>
+                  <div className="text-sm text-muted-foreground">Edge Score</div>
+                  <div className="font-bold text-orange-500">{prediction.edgeScore}/10</div>
+                  <div className="text-sm text-muted-foreground">Strong value</div>
                 </div>
               </div>
               
               <div className="flex items-center justify-between">
-                <div className="text-sm text-slate-400 flex items-center">
+                <div className="text-sm text-muted-foreground flex items-center">
                   <Info className="w-4 h-4 mr-1" />
                   {prediction.reasoning}
                 </div>
                 <Button 
                   onClick={() => onPlaceBet(game.id, prediction)}
-                  className="bg-[#1E40AF] hover:bg-blue-600 text-white"
+                  className="bg-blue-600 hover:bg-blue-700"
                 >
                   Place Bet
                 </Button>
@@ -111,13 +111,13 @@ export function AIPredictions({ onPlaceBet }: AIPredictionsProps) {
         )}
         
         {gamesWithPredictions.length === 0 && (
-          <div className="text-center py-8 text-slate-400">
+          <div className="text-center py-8 text-muted-foreground">
             No predictions available at the moment. Check back soon!
           </div>
         )}
         
         <div className="text-center pt-4">
-          <Button variant="ghost" className="text-[#1E40AF] hover:text-blue-400">
+          <Button variant="ghost" className="text-blue-600 hover:text-blue-500">
             View All Predictions →
           </Button>
         </div>

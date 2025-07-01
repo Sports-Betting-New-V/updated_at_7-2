@@ -125,28 +125,28 @@ export function QuickBet() {
             <Button
               variant={betType === "spread" ? "default" : "outline"}
               onClick={() => setBetType("spread")}
-              className="bg-[#0F172A] border-[#334155] hover:border-[#1E40AF]"
+              className="bg-background border hover:border-primary"
             >
               Spread
             </Button>
             <Button
               variant={betType === "moneyline" ? "default" : "outline"}
               onClick={() => setBetType("moneyline")}
-              className="bg-[#0F172A] border-[#334155] hover:border-[#1E40AF]"
+              className="bg-background border hover:border-primary"
             >
               Moneyline
             </Button>
             <Button
               variant={betType === "total" ? "default" : "outline"}
               onClick={() => setBetType("total")}
-              className="bg-[#0F172A] border-[#334155] hover:border-[#1E40AF]"
+              className="bg-background border hover:border-primary"
             >
               Total
             </Button>
             <Button
               variant={betType === "prop" ? "default" : "outline"}
               onClick={() => setBetType("prop")}
-              className="bg-[#0F172A] border-[#334155] hover:border-[#1E40AF]"
+              className="bg-background border hover:border-primary"
             >
               Prop
             </Button>
@@ -179,7 +179,7 @@ export function QuickBet() {
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full bg-[#0F172A] border-[#334155] pl-8 pr-3 py-2 text-slate-50 focus:border-[#1E40AF]"
+              className="w-full bg-background border pl-8 pr-3 py-2 text-foreground focus:border-primary"
               placeholder="100"
             />
           </div>
@@ -192,7 +192,7 @@ export function QuickBet() {
         <Button
           onClick={handlePlaceBet}
           disabled={placeBetMutation.isPending}
-          className="w-full bg-[#1E40AF] hover:bg-blue-600 text-white py-3"
+          className="w-full bg-blue-600 hover:bg-blue-700 py-3"
         >
           {placeBetMutation.isPending ? "Placing..." : "Place Bet"}
         </Button>

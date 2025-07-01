@@ -31,8 +31,8 @@ export function InsightsPanel() {
           </div>
           
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-[#F59E0B]/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <BarChart3 className="text-[#F59E0B] w-4 h-4" />
+            <div className="w-8 h-8 bg-orange-500/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <BarChart3 className="text-orange-500 w-4 h-4" />
             </div>
             <div>
               <div className="font-medium">Spread Betting Strength</div>
@@ -43,8 +43,8 @@ export function InsightsPanel() {
           </div>
           
           <div className="flex items-start space-x-3">
-            <div className="w-8 h-8 bg-[#1E40AF]/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <Calendar className="text-[#1E40AF] w-4 h-4" />
+            <div className="w-8 h-8 bg-blue-600/20 rounded-full flex items-center justify-center flex-shrink-0">
+              <Calendar className="text-blue-600 w-4 h-4" />
             </div>
             <div>
               <div className="font-medium">Weekend Games Alert</div>
@@ -80,9 +80,9 @@ export function InsightsPanel() {
             <span className="font-medium text-green-500">{stats?.currentStreak || 0} bets</span>
           </div>
           
-          <div className="bg-[#0F172A] rounded-lg p-4 border border-[#334155]">
+          <div className="bg-muted rounded-lg p-4">
             <div className="flex items-center space-x-2">
-              <Shield className="text-[#1E40AF] w-4 h-4" />
+              <Shield className="text-blue-600 w-4 h-4" />
               <span className="text-sm font-medium">Bankroll Protection Active</span>
             </div>
             <div className="text-xs text-muted-foreground mt-1">
