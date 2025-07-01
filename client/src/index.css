@@ -24,13 +24,12 @@
   --ring: hsl(221.2, 83.2%, 53.3%);
   --radius: 0.5rem;
   
-  /* Custom colors for betting app */
-  --surface: hsl(215, 28%, 17%);
-  --surface-light: hsl(215, 20%, 25%);
-  --dark: hsl(222, 47%, 5%);
-  --success: hsl(158, 64%, 52%);
-  --warning: hsl(43, 96%, 56%);
-  --danger: hsl(0, 84%, 60%);
+  /* Chart colors */
+  --chart-1: hsl(221.2, 83.2%, 53.3%);
+  --chart-2: hsl(158, 64%, 52%);
+  --chart-3: hsl(43, 96%, 56%);
+  --chart-4: hsl(0, 84%, 60%);
+  --chart-5: hsl(282, 84%, 56%);
 }
 
 .dark {
@@ -53,6 +52,13 @@
   --destructive: hsl(0, 62.8%, 30.6%);
   --destructive-foreground: hsl(210, 40%, 98%);
   --ring: hsl(215, 20%, 65%);
+  
+  /* Chart colors for dark mode */
+  --chart-1: hsl(221.2, 83.2%, 53.3%);
+  --chart-2: hsl(158, 64%, 52%);
+  --chart-3: hsl(43, 96%, 56%);
+  --chart-4: hsl(0, 84%, 60%);
+  --chart-5: hsl(282, 84%, 56%);
 }
 
 @layer base {
@@ -64,13 +70,4 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', system-ui, sans-serif;
   }
-}
-
-/* Force dark theme */
-html {
-  @apply dark;
-}
-
-body {
-  @apply bg-[#0F172A] text-slate-50;
 }

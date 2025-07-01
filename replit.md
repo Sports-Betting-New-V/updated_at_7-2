@@ -98,6 +98,12 @@ Changelog:
   * ESPN Sports API for live game data (integrated)
   * Added API endpoints for generating fresh predictions and refreshing games
   * Database auto-initialization with sample data on startup
+- July 01, 2025. Migration to Replit environment completed:
+  * Fixed missing dependencies and database connectivity
+  * Implemented comprehensive dark/light mode theme system
+  * Added theme toggle with system preference detection and localStorage persistence
+  * Updated all pages and components for proper theme responsiveness
+  * Removed hard-coded dark mode styling for proper theme switching
 ```
 
 ## External Service Integrations

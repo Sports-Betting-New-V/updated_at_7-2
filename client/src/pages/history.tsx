@@ -87,7 +87,7 @@ export default function History() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#0F172A] text-slate-50">
+      <div className="min-h-screen bg-background">
         <Header />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-6">
@@ -108,7 +108,7 @@ export default function History() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0F172A] text-slate-50">
+    <div className="min-h-screen bg-background">
       <Header />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
