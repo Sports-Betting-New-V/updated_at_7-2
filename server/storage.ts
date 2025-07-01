@@ -70,7 +70,7 @@ export class MemStorage implements IStorage {
         id: 1,
         homeTeam: "Lakers",
         awayTeam: "Warriors",
-        gameTime: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours from now
+        gameTime: new Date(Date.now() + 4 * 60 * 60 * 1000),
         sport: "NBA",
         homeSpread: "-3.5",
         awaySpread: "3.5",
@@ -85,7 +85,7 @@ export class MemStorage implements IStorage {
         id: 2,
         homeTeam: "Celtics",
         awayTeam: "Heat",
-        gameTime: new Date(Date.now() + 4.5 * 60 * 60 * 1000), // 4.5 hours from now
+        gameTime: new Date(Date.now() + 4.5 * 60 * 60 * 1000),
         sport: "NBA",
         homeSpread: "-5.5",
         awaySpread: "5.5",
@@ -96,10 +96,55 @@ export class MemStorage implements IStorage {
         homeScore: null,
         awayScore: null,
       },
+      {
+        id: 3,
+        homeTeam: "Cowboys",
+        awayTeam: "Eagles",
+        gameTime: new Date(Date.now() + 6 * 60 * 60 * 1000),
+        sport: "NFL",
+        homeSpread: "-7.0",
+        awaySpread: "7.0",
+        totalPoints: "47.5",
+        homeMoneyline: -280,
+        awayMoneyline: 220,
+        status: "upcoming",
+        homeScore: null,
+        awayScore: null,
+      },
+      {
+        id: 4,
+        homeTeam: "Yankees",
+        awayTeam: "Red Sox",
+        gameTime: new Date(Date.now() + 8 * 60 * 60 * 1000),
+        sport: "MLB",
+        homeSpread: "-1.5",
+        awaySpread: "1.5",
+        totalPoints: "9.5",
+        homeMoneyline: -165,
+        awayMoneyline: 145,
+        status: "upcoming",
+        homeScore: null,
+        awayScore: null,
+      },
+      {
+        id: 5,
+        homeTeam: "Rangers",
+        awayTeam: "Bruins",
+        gameTime: new Date(Date.now() + 10 * 60 * 60 * 1000),
+        sport: "NHL",
+        homeSpread: "-1.5",
+        awaySpread: "1.5",
+        totalPoints: "6.5",
+        homeMoneyline: -140,
+        awayMoneyline: 120,
+        status: "upcoming",
+        homeScore: null,
+        awayScore: null,
+      },
     ];
 
     sampleGames.forEach(game => this.games.set(game.id, game));
-    this.currentGameId = 3;
+    this.currentGameId = 6;
 
     // Create sample predictions
     const samplePredictions: Prediction[] = [
@@ -125,10 +170,43 @@ export class MemStorage implements IStorage {
         reasoning: "Public heavily on over, defensive matchup expected",
         createdAt: new Date(),
       },
+      {
+        id: 3,
+        gameId: 3,
+        recommendedPick: "Eagles +7.0",
+        betType: "spread",
+        edgeScore: "7.8",
+        confidenceTier: "high",
+        tags: ["Road Dog", "Value"],
+        reasoning: "Eagles getting too many points in this divisional matchup",
+        createdAt: new Date(),
+      },
+      {
+        id: 4,
+        gameId: 4,
+        recommendedPick: "Over 9.5",
+        betType: "total",
+        edgeScore: "6.9",
+        confidenceTier: "medium",
+        tags: ["Steam", "Weather"],
+        reasoning: "Wind conditions favor offense, both bullpens have been shaky",
+        createdAt: new Date(),
+      },
+      {
+        id: 5,
+        gameId: 5,
+        recommendedPick: "Bruins ML",
+        betType: "moneyline",
+        edgeScore: "5.4",
+        confidenceTier: "low",
+        tags: ["Value", "Injury News"],
+        reasoning: "Rangers missing key defenseman, Bruins good value as road favorite",
+        createdAt: new Date(),
+      },
     ];
 
     samplePredictions.forEach(prediction => this.predictions.set(prediction.id, prediction));
-    this.currentPredictionId = 3;
+    this.currentPredictionId = 6;
 
     // Create sample bets
     const sampleBets: Bet[] = [
@@ -177,6 +255,7 @@ export class MemStorage implements IStorage {
     const user: User = {
       ...insertUser,
       id,
+      bankroll: insertUser.bankroll || "10000.00",
       createdAt: new Date(),
     };
     this.users.set(id, user);
@@ -202,7 +281,12 @@ export class MemStorage implements IStorage {
 
   async createGame(insertGame: InsertGame): Promise<Game> {
     const id = this.currentGameId++;
-    const game: Game = { ...insertGame, id };
+    const game: Game = { 
+      ...insertGame, 
+      id,
+      sport: insertGame.sport || "NBA",
+      status: insertGame.status || "upcoming"
+    };
     this.games.set(id, game);
     return game;
   }
@@ -228,6 +312,8 @@ export class MemStorage implements IStorage {
     const prediction: Prediction = {
       ...insertPrediction,
       id,
+      tags: insertPrediction.tags || [],
+      reasoning: insertPrediction.reasoning || null,
       createdAt: new Date(),
     };
     this.predictions.set(id, prediction);
@@ -247,6 +333,10 @@ export class MemStorage implements IStorage {
     const bet: Bet = {
       ...insertBet,
       id,
+      status: insertBet.status || "pending",
+      predictionId: insertBet.predictionId || null,
+      odds: insertBet.odds || -110,
+      payout: insertBet.payout || null,
       placedAt: new Date(),
     };
     this.bets.set(id, bet);

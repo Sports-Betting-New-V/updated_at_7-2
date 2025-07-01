@@ -109,6 +109,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const validation = bettingSimulator.validateBet({
         ...betData,
         id: 0,
+        status: "pending",
+        payout: null,
         placedAt: new Date(),
       }, parseFloat(user.bankroll));
 
