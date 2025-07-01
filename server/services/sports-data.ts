@@ -35,12 +35,53 @@ interface ESPNResponse {
 }
 
 export class SportsDataService {
-  private readonly baseUrl = "https://site.api.espn.com/apis/site/v2/sports";
+  private readonly espnBaseUrl = "https://site.api.espn.com/apis/site/v2/sports";
+  private readonly sportsDataApiKey = process.env.SPORTSDATA_API_KEY;
+  private readonly rapidApiKey = process.env.RAPIDAPI_KEY;
 
   async fetchNBAGames(): Promise<InsertGame[]> {
+    // Try SportsDataIO first (premium data)
+    if (this.sportsDataApiKey) {
+      try {
+        console.log("🏀 Fetching NBA games from SportsDataIO...");
+        const response = await fetch(`https://api.sportsdata.io/v3/nba/scores/json/GamesByDate/${new Date().toISOString().split('T')[0]}?key=${this.sportsDataApiKey}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`SportsDataIO: Found ${data.length} NBA games`);
+          return this.transformSportsDataGames(data, "NBA");
+        }
+        console.log("SportsDataIO NBA: No data available");
+      } catch (error) {
+        console.log("SportsDataIO failed, trying RapidAPI");
+      }
+    }
+    
+    // Try RapidAPI as second option
+    if (this.rapidApiKey) {
+      try {
+        console.log("🏀 Fetching NBA games from RapidAPI...");
+        const response = await fetch("https://api-nba-v1.p.rapidapi.com/games", {
+          headers: {
+            'X-RapidAPI-Key': this.rapidApiKey,
+            'X-RapidAPI-Host': 'api-nba-v1.p.rapidapi.com'
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          console.log(`RapidAPI: Found ${data.response?.length || 0} NBA games`);
+          return this.transformRapidApiGames(data.response || [], "NBA");
+        }
+      } catch (error) {
+        console.log("RapidAPI NBA failed, using ESPN");
+      }
+    }
+    
+    // Fallback to ESPN
     try {
-      const response = await fetch(`${this.baseUrl}/basketball/nba/scoreboard`);
+      console.log("🏀 Fetching NBA games from ESPN...");
+      const response = await fetch(`${this.espnBaseUrl}/basketball/nba/scoreboard`);
       const data: ESPNResponse = await response.json();
+      console.log(`ESPN: Found ${data.events.length} NBA games`);
       return this.transformESPNGames(data.events, "NBA");
     } catch (error) {
       console.error("Error fetching NBA games:", error);
@@ -49,8 +90,21 @@ export class SportsDataService {
   }
 
   async fetchNFLGames(): Promise<InsertGame[]> {
+    // Try SportsDataIO first
+    if (this.sportsDataApiKey) {
+      try {
+        const response = await fetch(`https://api.sportsdata.io/v3/nfl/scores/json/GamesByDate/${new Date().toISOString().split('T')[0]}?key=${this.sportsDataApiKey}`);
+        if (response.ok) {
+          const data = await response.json();
+          return this.transformSportsDataGames(data, "NFL");
+        }
+      } catch (error) {
+        console.log("SportsDataIO NFL failed, using ESPN");
+      }
+    }
+    
     try {
-      const response = await fetch(`${this.baseUrl}/football/nfl/scoreboard`);
+      const response = await fetch(`${this.espnBaseUrl}/football/nfl/scoreboard`);
       const data: ESPNResponse = await response.json();
       return this.transformESPNGames(data.events, "NFL");
     } catch (error) {
@@ -90,6 +144,40 @@ export class SportsDataService {
     ]);
 
     return [...nbaGames, ...nflGames, ...mlbGames, ...nhlGames];
+  }
+
+  private transformSportsDataGames(sportsDataGames: any[], sport: string): InsertGame[] {
+    return sportsDataGames.map((game: any) => ({
+      homeTeam: game.HomeTeam || game.HomeTeamName || "TBD",
+      awayTeam: game.AwayTeam || game.AwayTeamName || "TBD", 
+      gameTime: new Date(game.DateTime || game.GameTime || Date.now()),
+      sport,
+      homeSpread: game.PointSpread ? game.PointSpread.toString() : null,
+      awaySpread: game.PointSpread ? (game.PointSpread * -1).toString() : null,
+      totalPoints: game.OverUnder ? game.OverUnder.toString() : null,
+      homeMoneyline: game.HomeTeamMoneyLine || null,
+      awayMoneyline: game.AwayTeamMoneyLine || null,
+      status: game.Status || "scheduled",
+      homeScore: game.HomeScore || null,
+      awayScore: game.AwayScore || null,
+    }));
+  }
+
+  private transformRapidApiGames(rapidApiGames: any[], sport: string): InsertGame[] {
+    return rapidApiGames.map((game: any) => ({
+      homeTeam: game.teams?.home?.name || "TBD",
+      awayTeam: game.teams?.visitors?.name || "TBD",
+      gameTime: new Date(game.date?.start || Date.now()),
+      sport,
+      homeSpread: this.calculateSpread(sport, game.teams?.home?.name || "", game.teams?.visitors?.name || "").toString(),
+      awaySpread: (this.calculateSpread(sport, game.teams?.home?.name || "", game.teams?.visitors?.name || "") * -1).toString(),
+      totalPoints: this.calculateTotal(sport).toString(),
+      homeMoneyline: this.spreadToMoneyline(3.5),
+      awayMoneyline: this.spreadToMoneyline(-3.5),
+      status: game.status?.long || "scheduled",
+      homeScore: game.scores?.home?.points || null,
+      awayScore: game.scores?.visitors?.points || null,
+    }));
   }
 
   private transformESPNGames(espnGames: ESPNGame[], sport: string): InsertGame[] {

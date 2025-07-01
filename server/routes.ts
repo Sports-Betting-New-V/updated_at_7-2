@@ -40,6 +40,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Refresh games from professional sports APIs
+  app.post("/api/games/refresh", async (req, res) => {
+    try {
+      console.log("🔄 Refreshing game data from SportsDataIO and RapidAPI...");
+      const freshGames = await sportsDataService.fetchAllSportsGames();
+      
+      for (const gameData of freshGames) {
+        await storage.createGame(gameData);
+      }
+      
+      console.log(`✅ Refreshed ${freshGames.length} games from live sports data`);
+      res.json({ 
+        success: true, 
+        message: `Refreshed ${freshGames.length} games from professional sports APIs`,
+        games: freshGames 
+      });
+    } catch (error: any) {
+      console.error("❌ Games refresh failed:", error.message);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Get predictions
   app.get("/api/predictions", async (req, res) => {
     try {
