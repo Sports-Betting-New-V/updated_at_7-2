@@ -23,6 +23,8 @@ export class DataInitService {
       // Create sample games if none exist
       const existingGames = await db.select().from(games);
       if (existingGames.length === 0) {
+        console.log("Creating sample games with predictions...");
+        
         const sampleGames = [
           {
             homeTeam: "Lakers",
@@ -41,7 +43,7 @@ export class DataInitService {
           {
             homeTeam: "Celtics",
             awayTeam: "Heat",
-            sport: "NBA",
+            sport: "NBA", 
             gameTime: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours from now
             status: "scheduled",
             homeSpread: "-7.0",
@@ -99,21 +101,15 @@ export class DataInitService {
         const insertedGames = await db.insert(games).values(sampleGames).returning();
         console.log(`Created ${insertedGames.length} sample games`);
 
-        // Generate AI predictions for the games
-        try {
-          const aiPredictions = await predictionEngine.generateMultiplePredictions(insertedGames);
-          if (aiPredictions.length > 0) {
-            await db.insert(predictions).values(aiPredictions);
-            console.log(`Generated ${aiPredictions.length} AI predictions`);
-          }
-        } catch (error) {
-          console.error("Failed to generate AI predictions:", error);
-          // Create fallback predictions
-          const fallbackPredictions = insertedGames.map(game => 
-            predictionEngine.generateFallbackPrediction(game)
-          );
-          await db.insert(predictions).values(fallbackPredictions);
-          console.log(`Created ${fallbackPredictions.length} fallback predictions`);
+        // Generate predictions for the games using fallback method to avoid API issues during init
+        console.log("Generating predictions for games...");
+        const gamePredictions = insertedGames.map(game => 
+          predictionEngine.generateFallbackPrediction(game)
+        );
+
+        if (gamePredictions.length > 0) {
+          await db.insert(predictions).values(gamePredictions);
+          console.log(`Created ${gamePredictions.length} predictions in database`);
         }
 
         // Create some sample bets
@@ -125,7 +121,7 @@ export class DataInitService {
             pick: "Warriors +3.5",
             betType: "spread",
             amount: "100.00",
-            odds: 1.91,
+            odds: -110,
             status: "won",
             payout: "191.00",
             placedAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
@@ -137,7 +133,7 @@ export class DataInitService {
             pick: "Under 215.5",
             betType: "total",
             amount: "50.00",
-            odds: 1.95,
+            odds: -110,
             status: "lost",
             payout: null,
             placedAt: new Date(Date.now() - 12 * 60 * 60 * 1000), // 12 hours ago
@@ -149,7 +145,7 @@ export class DataInitService {
       }
 
       console.log("Database initialization completed successfully");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Database initialization failed:", error);
     }
   }
