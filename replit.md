@@ -92,7 +92,29 @@ This is a full-stack TypeScript application that simulates sports betting with A
 ```
 Changelog:
 - July 01, 2025. Initial setup
+- July 01, 2025. Integrated real-time data sources:
+  * PostgreSQL database with Drizzle ORM (connected and initialized)
+  * OpenAI API for AI-powered predictions (connected)
+  * ESPN Sports API for live game data (integrated)
+  * Added API endpoints for generating fresh predictions and refreshing games
+  * Database auto-initialization with sample data on startup
 ```
+
+## External Service Integrations
+
+### Database Layer
+- **PostgreSQL**: Connected via Neon serverless with environment variables
+- **Drizzle ORM**: Schema pushed and operational with auto-initialization
+- **Storage Interface**: Hybrid system using DatabaseStorage when DB available, MemStorage as fallback
+
+### AI Services  
+- **OpenAI API**: Connected for real-time prediction generation using GPT-4o
+- **Prediction Engine**: Enhanced with AI-powered analysis and fallback logic
+
+### Sports Data
+- **ESPN Sports API**: Free tier integration for live NBA, NFL, MLB, NHL game data
+- **Data Refresh**: Real-time game fetching with realistic betting lines generation
+- **Sports Coverage**: Multi-sport support with sport-specific line calculations
 
 ## User Preferences
 

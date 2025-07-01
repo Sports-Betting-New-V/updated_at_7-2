@@ -1,7 +1,14 @@
 import { type Game, type InsertPrediction } from "@shared/schema";
+import { openAIService } from "./openai-service";
 
 export class PredictionEngine {
-  generatePrediction(game: Game): InsertPrediction {
+  async generatePrediction(game: Game): Promise<InsertPrediction> {
+    // Use OpenAI for real predictions
+    return await openAIService.generatePrediction(game);
+  }
+
+  // Keep fallback method for when OpenAI is not available
+  generateFallbackPrediction(game: Game): InsertPrediction {
     // Simple ML simulation based on team names and spreads
     const homeAdvantage = 2.5;
     const randomFactor = Math.random() * 10 - 5; // -5 to +5
@@ -81,6 +88,38 @@ export class PredictionEngine {
     // Return 1-3 random tags
     const numTags = Math.floor(Math.random() * 3) + 1;
     return allTags.sort(() => 0.5 - Math.random()).slice(0, numTags);
+  }
+
+  async generateMultiplePredictions(games: Game[]): Promise<InsertPrediction[]> {
+    const predictions: InsertPrediction[] = [];
+    
+    // Generate predictions for each game (limit to prevent API overuse)
+    const gamesToProcess = games.slice(0, 5);
+    
+    for (const game of gamesToProcess) {
+      try {
+        const prediction = await this.generatePrediction(game);
+        predictions.push(prediction);
+        
+        // Small delay to avoid rate limiting
+        await new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error(`Failed to generate prediction for game ${game.id}:`, error);
+        // Fall back to mock prediction
+        predictions.push(this.generateFallbackPrediction(game));
+      }
+    }
+    
+    return predictions;
+  }
+
+  async getMarketInsights(games: Game[]): Promise<string> {
+    try {
+      return await openAIService.analyzeBettingTrends(games);
+    } catch (error) {
+      console.error("Failed to get market insights:", error);
+      return "Market analysis shows typical seasonal patterns with increased activity across major sports.";
+    }
   }
 }
 

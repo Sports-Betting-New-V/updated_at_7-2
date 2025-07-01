@@ -161,6 +161,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Generate fresh predictions using AI
+  app.post("/api/predictions/generate", async (req, res) => {
+    try {
+      const games = await storage.getGames();
+      const recentGames = games.filter(game => 
+        new Date(game.gameTime) > new Date() // Only future games
+      ).slice(0, 5); // Limit to prevent API overuse
+
+      if (recentGames.length === 0) {
+        return res.json({ message: "No upcoming games found for predictions" });
+      }
+
+      const newPredictions = [];
+      for (const game of recentGames) {
+        try {
+          const prediction = await predictionEngine.generatePrediction(game);
+          const createdPrediction = await storage.createPrediction(prediction);
+          newPredictions.push(createdPrediction);
+          
+          // Small delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 500));
+        } catch (error) {
+          console.error(`Failed to generate prediction for game ${game.id}:`, error);
+        }
+      }
+
+      res.json({ 
+        message: `Generated ${newPredictions.length} new AI predictions`,
+        predictions: newPredictions 
+      });
+    } catch (error) {
+      console.error("Error generating predictions:", error);
+      res.status(500).json({ error: "Failed to generate predictions" });
+    }
+  });
+
+  // Refresh games from live sports data
+  app.post("/api/games/refresh", async (req, res) => {
+    try {
+      const { sportsDataService } = await import("./services/sports-data");
+      const liveGames = await sportsDataService.fetchAllSportsGames();
+      
+      if (liveGames.length === 0) {
+        return res.json({ message: "No live games available at this time" });
+      }
+
+      const createdGames = [];
+      for (const gameData of liveGames) {
+        try {
+          const game = await storage.createGame(gameData);
+          createdGames.push(game);
+        } catch (error) {
+          // Game might already exist or have duplicate data
+          console.log(`Skipped duplicate or invalid game: ${gameData.homeTeam} vs ${gameData.awayTeam}`);
+        }
+      }
+
+      res.json({ 
+        message: `Refreshed with ${createdGames.length} new games from live sports data`,
+        games: createdGames 
+      });
+    } catch (error) {
+      console.error("Error refreshing games:", error);
+      res.status(500).json({ error: "Failed to refresh games from sports data" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

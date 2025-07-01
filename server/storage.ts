@@ -431,4 +431,168 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+import { db } from "./db";
+import { eq, desc, and } from "drizzle-orm";
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async updateUserBankroll(userId: number, amount: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({ bankroll: amount })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async getGames(): Promise<Game[]> {
+    return await db.select().from(games).orderBy(games.gameTime);
+  }
+
+  async getGame(id: number): Promise<Game | undefined> {
+    const [game] = await db.select().from(games).where(eq(games.id, id));
+    return game || undefined;
+  }
+
+  async createGame(insertGame: InsertGame): Promise<Game> {
+    const [game] = await db
+      .insert(games)
+      .values(insertGame)
+      .returning();
+    return game;
+  }
+
+  async getGamesWithPredictions(): Promise<GameWithPredictions[]> {
+    const gamesData = await db.select().from(games).orderBy(games.gameTime);
+    const predictionsData = await db.select().from(predictions);
+    
+    return gamesData.map(game => ({
+      ...game,
+      predictions: predictionsData.filter(p => p.gameId === game.id)
+    }));
+  }
+
+  async getPredictions(): Promise<Prediction[]> {
+    return await db.select().from(predictions).orderBy(desc(predictions.createdAt));
+  }
+
+  async getPredictionsByGameId(gameId: number): Promise<Prediction[]> {
+    return await db.select().from(predictions).where(eq(predictions.gameId, gameId));
+  }
+
+  async createPrediction(insertPrediction: InsertPrediction): Promise<Prediction> {
+    const [prediction] = await db
+      .insert(predictions)
+      .values(insertPrediction)
+      .returning();
+    return prediction;
+  }
+
+  async getBetsByUserId(userId: number): Promise<BetWithGame[]> {
+    const betsData = await db.select().from(bets).where(eq(bets.userId, userId)).orderBy(desc(bets.placedAt));
+    const gamesData = await db.select().from(games);
+    
+    return betsData.map(bet => ({
+      ...bet,
+      game: gamesData.find(g => g.id === bet.gameId)!
+    }));
+  }
+
+  async createBet(insertBet: InsertBet): Promise<Bet> {
+    const [bet] = await db
+      .insert(bets)
+      .values(insertBet)
+      .returning();
+    return bet;
+  }
+
+  async updateBetStatus(betId: number, status: string, payout?: string): Promise<Bet> {
+    const [bet] = await db
+      .update(bets)
+      .set({ status, payout: payout || null })
+      .where(eq(bets.id, betId))
+      .returning();
+    return bet;
+  }
+
+  async getRecentBetsByUserId(userId: number, limit: number): Promise<BetWithGame[]> {
+    const betsData = await db.select().from(bets)
+      .where(eq(bets.userId, userId))
+      .orderBy(desc(bets.placedAt))
+      .limit(limit);
+    const gamesData = await db.select().from(games);
+    
+    return betsData.map(bet => ({
+      ...bet,
+      game: gamesData.find(g => g.id === bet.gameId)!
+    }));
+  }
+
+  async getUserStats(userId: number): Promise<UserStats> {
+    const userBets = await this.getBetsByUserId(userId);
+    
+    const totalBets = userBets.length;
+    const wonBets = userBets.filter(bet => bet.status === 'won').length;
+    const winRate = totalBets > 0 ? (wonBets / totalBets) * 100 : 0;
+    
+    const totalPL = userBets.reduce((sum, bet) => {
+      if (bet.status === 'won' && bet.payout) {
+        return sum + parseFloat(bet.payout) - parseFloat(bet.amount);
+      } else if (bet.status === 'lost') {
+        return sum - parseFloat(bet.amount);
+      }
+      return sum;
+    }, 0);
+    
+    const totalWagered = userBets.reduce((sum, bet) => sum + parseFloat(bet.amount), 0);
+    const roi = totalWagered > 0 ? (totalPL / totalWagered) * 100 : 0;
+    
+    // Calculate current streak
+    let currentStreak = 0;
+    for (const bet of userBets) {
+      if (bet.status === 'won') {
+        currentStreak++;
+      } else if (bet.status === 'lost') {
+        break;
+      }
+    }
+    
+    const bankrollHistory = [
+      { date: '2024-12-25', amount: 10000 },
+      { date: '2024-12-26', amount: 10000 + totalPL * 0.3 },
+      { date: '2024-12-27', amount: 10000 + totalPL * 0.6 },
+      { date: '2024-12-28', amount: 10000 + totalPL },
+    ];
+    
+    return {
+      totalPL,
+      winRate,
+      totalBets,
+      roi,
+      currentStreak,
+      bankrollHistory,
+    };
+  }
+}
+
+// Check if we should use database or memory storage
+const USE_DATABASE = process.env.DATABASE_URL && process.env.DATABASE_URL.length > 0;
+
+export const storage = USE_DATABASE ? new DatabaseStorage() : new MemStorage();
