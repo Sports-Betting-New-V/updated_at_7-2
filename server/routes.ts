@@ -4,41 +4,32 @@ import { storage } from "./storage";
 import { predictionEngine } from "./services/prediction-engine";
 import { bettingSimulator } from "./services/betting-simulator";
 import { sportsDataService } from "./services/sports-data";
-import { setupAuth, isAuthenticated } from "./replitAuth";
+import { setupAuth } from "./auth";
 import { insertBetSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup auth only if REPLIT_DOMAINS is available (production)
-  if (process.env.REPLIT_DOMAINS) {
-    await setupAuth(app);
-  }
+  // Setup email/password authentication
+  setupAuth(app);
 
-  // Auth routes
-  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const user = await storage.getUser(userId);
-      res.json(user);
-    } catch (error) {
-      console.error("Error fetching user:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
-    }
-  });
-
-  // Get current user - backwards compatibility
+  // Get current user - works with both authenticated and demo mode
   app.get("/api/user", async (req: any, res) => {
     try {
-      // If authenticated, get the real user
-      if (req.isAuthenticated?.() && req.user?.claims?.sub) {
-        const user = await storage.getUser(req.user.claims.sub);
+      // If authenticated with email/password, get the real user
+      if (req.isAuthenticated?.() && req.user?.id) {
+        const user = await storage.getUser(req.user.id);
         if (!user) {
           return res.status(404).json({ message: "User not found" });
         }
         res.json(user);
       } else {
-        // Return empty for unauthenticated users (demo mode)
-        res.status(401).json({ message: "Please log in to access user data" });
+        // Return demo user for unauthenticated users
+        const demoUser = await storage.getUser("demo-user-1");
+        if (demoUser) {
+          res.json(demoUser);
+        } else {
+          res.status(401).json({ message: "Please log in to access user data" });
+        }
       }
     } catch (error) {
       res.status(500).json({ message: "Failed to get user" });

@@ -3,19 +3,20 @@ import { User, ChartLine, LogIn, LogOut } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { formatCurrency } from "@/lib/utils";
 import { ThemeToggle } from "./theme-toggle";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import type { User as UserType } from "@shared/schema";
 
 export function Header() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { user, logoutMutation, isLoading } = useAuth();
   const { data: demoUser } = useQuery<UserType>({
     queryKey: ["/api/user/demo"],
-    enabled: !isAuthenticated,
+    enabled: !user,
   });
 
   // Show demo user data when not authenticated
   const currentUser = user || demoUser;
+  const isAuthenticated = !!user;
 
   const [location] = useLocation();
 
@@ -84,21 +85,21 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => window.location.href = "/api/logout"}
+                  onClick={() => logoutMutation.mutate()}
+                  disabled={logoutMutation.isPending}
                   className="text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 >
                   <LogOut className="w-4 h-4 mr-1" />
-                  Logout
+                  {logoutMutation.isPending ? "Logging out..." : "Logout"}
                 </Button>
               </div>
             ) : (
-              <Button
-                onClick={() => window.location.href = "/api/login"}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-              >
-                <LogIn className="w-4 h-4 mr-2" />
-                Login
-              </Button>
+              <Link href="/auth">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Login
+                </Button>
+              </Link>
             )}
           </div>
         </div>

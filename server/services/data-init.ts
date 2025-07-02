@@ -15,6 +15,8 @@ export class DataInitService {
         await db.insert(users).values({
           id: "demo-user-1",
           email: "demo@example.com",
+          username: "demo",
+          password: "demo123", // This would be hashed in real auth
           firstName: "Demo",
           lastName: "User",
           bankroll: "10000.00"

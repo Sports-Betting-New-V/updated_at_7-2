@@ -110,7 +110,7 @@ export function QuickBet() {
               <SelectValue placeholder="Choose a game..." />
             </SelectTrigger>
             <SelectContent className="">
-              {games?.filter(g => g.status === "upcoming").map((game) => (
+              {games?.filter(g => g.status === "upcoming" || g.status === "scheduled").map((game) => (
                 <SelectItem key={game.id} value={game.id.toString()}>
                   {game.awayTeam} @ {game.homeTeam}
                 </SelectItem>

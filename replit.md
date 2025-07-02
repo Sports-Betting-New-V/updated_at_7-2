@@ -141,6 +141,15 @@ Changelog:
   * Protected bet placement - requires authentication
   * Demo mode still available for viewing sports data and analytics
   * Updated user interface to show authentication status
+- July 02, 2025. Migration to Replit environment completed:
+  * Successfully migrated from Replit Agent to Replit environment
+  * Implemented email/password authentication system replacing OAuth
+  * Fixed Quick Bet game selection issue (now shows scheduled games)
+  * Added comprehensive authentication UI with login/registration forms
+  * Updated database schema with username and password fields
+  * Enhanced security with proper password hashing and session management
+  * Created beautiful two-column auth page with feature highlights
+  * Application now fully functional with both authenticated and demo modes
 ```
 
 ## External Service Integrations
