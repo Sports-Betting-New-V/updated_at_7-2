@@ -9,12 +9,14 @@ export class DataInitService {
     console.log("Initializing database with sample data...");
     
     try {
-      // Create default user if doesn't exist
-      const existingUser = await db.select().from(users).where(eq(users.id, 1));
+      // Create default demo user if doesn't exist
+      const existingUser = await db.select().from(users).where(eq(users.id, "demo-user-1"));
       if (existingUser.length === 0) {
         await db.insert(users).values({
-          username: "john_bettor",
-          password: "password123",
+          id: "demo-user-1",
+          email: "demo@example.com",
+          firstName: "Demo",
+          lastName: "User",
           bankroll: "10000.00"
         });
         console.log("Created default user");
@@ -112,10 +114,10 @@ export class DataInitService {
           console.log(`Created ${gamePredictions.length} predictions in database`);
         }
 
-        // Create some sample bets
+        // Create some sample bets for demo user
         const sampleBets = [
           {
-            userId: 1,
+            userId: "demo-user-1",
             gameId: insertedGames[0].id,
             predictionId: null,
             pick: "Warriors +3.5",
@@ -127,7 +129,7 @@ export class DataInitService {
             placedAt: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
           },
           {
-            userId: 1,
+            userId: "demo-user-1",
             gameId: insertedGames[1].id,
             predictionId: null,
             pick: "Under 215.5",

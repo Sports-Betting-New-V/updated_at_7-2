@@ -9,8 +9,10 @@ import { insertBetSchema } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Auth middleware
-  await setupAuth(app);
+  // Setup auth only if REPLIT_DOMAINS is available (production)
+  if (process.env.REPLIT_DOMAINS) {
+    await setupAuth(app);
+  }
 
   // Auth routes
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
@@ -40,6 +42,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     } catch (error) {
       res.status(500).json({ message: "Failed to get user" });
+    }
+  });
+
+  // Get demo user data
+  app.get("/api/user/demo", async (req, res) => {
+    try {
+      const demoUser = await storage.getUser("demo-user-1");
+      if (!demoUser) {
+        return res.status(404).json({ message: "Demo user not found" });
+      }
+      res.json(demoUser);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get demo user" });
     }
   });
 
@@ -151,15 +166,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Place a bet (protected route)
+  // Place a bet (supports both demo and authenticated mode)
   app.post("/api/bets", async (req: any, res) => {
     try {
-      // Check if user is authenticated for real betting
-      if (!req.isAuthenticated?.() || !req.user?.claims?.sub) {
-        return res.status(401).json({ message: "Please log in to place bets" });
+      // Use authenticated user if available, otherwise demo user
+      let userId = "demo-user-1";
+      if (req.isAuthenticated?.() && req.user?.claims?.sub) {
+        userId = req.user.claims.sub;
       }
-
-      const userId = req.user.claims.sub;
       const betData = insertBetSchema.parse({
         ...req.body,
         userId,

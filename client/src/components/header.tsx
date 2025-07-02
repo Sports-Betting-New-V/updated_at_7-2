@@ -9,12 +9,13 @@ import type { User as UserType } from "@shared/schema";
 
 export function Header() {
   const { user, isAuthenticated, isLoading } = useAuth();
-  const { data: fallbackUser } = useQuery<UserType>({
-    queryKey: ["/api/user"],
+  const { data: demoUser } = useQuery<UserType>({
+    queryKey: ["/api/user/demo"],
     enabled: !isAuthenticated,
   });
 
-  const currentUser = user || fallbackUser;
+  // Show demo user data when not authenticated
+  const currentUser = user || demoUser;
 
   const [location] = useLocation();
 
