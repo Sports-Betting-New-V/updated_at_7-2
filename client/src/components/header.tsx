@@ -9,13 +9,6 @@ import type { User as UserType } from "@shared/schema";
 
 export function Header() {
   const { user, logoutMutation, isLoading } = useAuth();
-  const { data: demoUser } = useQuery<UserType>({
-    queryKey: ["/api/user/demo"],
-    enabled: !user,
-  });
-
-  // Show demo user data when not authenticated
-  const currentUser = user || demoUser;
   const isAuthenticated = !!user;
 
   const [location] = useLocation();
@@ -54,11 +47,11 @@ export function Header() {
             </nav>
           </div>
           <div className="flex items-center space-x-4">
-            {currentUser && (
+            {isAuthenticated && user && (
               <div className="text-right">
                 <div className="text-sm text-slate-500 dark:text-slate-400">Virtual Bankroll</div>
                 <div className="text-lg font-bold text-green-600 dark:text-green-400">
-                  {formatCurrency(currentUser.bankroll)}
+                  {formatCurrency(user.bankroll)}
                 </div>
               </div>
             )}

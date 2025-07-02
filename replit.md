@@ -150,6 +150,13 @@ Changelog:
   * Enhanced security with proper password hashing and session management
   * Created beautiful two-column auth page with feature highlights
   * Application now fully functional with both authenticated and demo modes
+- July 02, 2025. Mandatory authentication and UI improvements implemented:
+  * Protected betting routes - authentication required for predictions, simulator, history, analytics
+  * Enhanced Quick Bet component with secure login prompt for non-authenticated users
+  * Improved auth page with gradient design, feature showcase, and visual enhancements
+  * Fixed virtual bankroll display - now only shows for authenticated users
+  * Added visual icons and improved UI throughout betting components
+  * Maintained demo mode for viewing sports data without authentication
 ```
 
 ## External Service Integrations
