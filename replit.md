@@ -133,6 +133,14 @@ Changelog:
   * Added theme toggle with system preference detection and localStorage persistence
   * Updated all pages and components for proper theme responsiveness
   * Removed hard-coded dark mode styling for proper theme switching
+- July 02, 2025. OAuth authentication and bankroll fixes implemented:
+  * Integrated Replit OAuth authentication system
+  * Updated database schema to support OAuth (string user IDs)
+  * Fixed bankroll updating on bet placement and game results
+  * Added login/logout functionality to header component
+  * Protected bet placement - requires authentication
+  * Demo mode still available for viewing sports data and analytics
+  * Updated user interface to show authentication status
 ```
 
 ## External Service Integrations
