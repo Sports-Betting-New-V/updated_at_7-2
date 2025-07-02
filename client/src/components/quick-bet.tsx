@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
+import { Lock, TrendingUp, DollarSign, Shield } from "lucide-react";
+import { Link } from "wouter";
 import type { Game } from "@shared/schema";
 
 export function QuickBet() {
@@ -17,6 +20,7 @@ export function QuickBet() {
   
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const { data: games } = useQuery<Game[]>({
     queryKey: ["/api/games"],
@@ -30,8 +34,8 @@ export function QuickBet() {
     },
     onSuccess: () => {
       toast({
-        title: "Bet Placed!",
-        description: "Your bet has been placed successfully.",
+        title: "Bet Placed! 🎯",
+        description: "Your virtual bet has been placed successfully.",
       });
       setSelectedGameId("");
       setBetType("");
@@ -77,9 +81,9 @@ export function QuickBet() {
   };
 
   const handlePlaceBet = () => {
-    if (!selectedGameId || !betType || !amount || !pick) {
+    if (!selectedGameId || !betType || !pick || !amount) {
       toast({
-        title: "Missing Information",
+        title: "Incomplete Bet",
         description: "Please fill in all fields",
         variant: "destructive",
       });
@@ -95,21 +99,76 @@ export function QuickBet() {
     });
   };
 
+  if (!user) {
+    return (
+      <Card className="relative overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 border-blue-200 dark:border-blue-800">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-600/5 to-purple-600/5"></div>
+        <CardHeader className="relative border-b border-blue-200 dark:border-blue-800">
+          <div className="flex items-center space-x-2">
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+              <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <CardTitle className="text-blue-900 dark:text-blue-100">Secure Betting</CardTitle>
+              <p className="text-sm text-blue-600 dark:text-blue-400">Authentication required</p>
+            </div>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="relative p-6 text-center space-y-4">
+          <div className="p-6 bg-white/50 dark:bg-slate-900/50 rounded-lg border border-blue-200/50 dark:border-blue-800/50">
+            <Lock className="w-12 h-12 text-blue-500 dark:text-blue-400 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-blue-900 dark:text-blue-100 mb-2">
+              Login Required for Betting
+            </h3>
+            <p className="text-blue-700 dark:text-blue-300 mb-4 text-sm">
+              Create your account to access virtual betting with $10,000 starting bankroll
+            </p>
+            <div className="flex flex-col space-y-2">
+              <div className="flex items-center justify-center space-x-2 text-sm text-blue-600 dark:text-blue-400">
+                <TrendingUp className="w-4 h-4" />
+                <span>AI-powered predictions</span>
+              </div>
+              <div className="flex items-center justify-center space-x-2 text-sm text-blue-600 dark:text-blue-400">
+                <DollarSign className="w-4 h-4" />
+                <span>Virtual currency betting</span>
+              </div>
+            </div>
+          </div>
+          
+          <Link href="/auth">
+            <Button className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg">
+              <Lock className="w-4 h-4 mr-2" />
+              Sign Up / Login to Bet
+            </Button>
+          </Link>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="">
-      <CardHeader className="border-b">
-        <CardTitle>Quick Bet</CardTitle>
-        <p className="text-sm text-muted-foreground">Place a simulated bet</p>
+    <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-green-200 dark:border-green-800">
+      <CardHeader className="border-b border-green-200 dark:border-green-800">
+        <div className="flex items-center space-x-2">
+          <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-lg">
+            <TrendingUp className="w-5 h-5 text-green-600 dark:text-green-400" />
+          </div>
+          <div>
+            <CardTitle className="text-green-900 dark:text-green-100">Quick Bet</CardTitle>
+            <p className="text-sm text-green-600 dark:text-green-400">Place your virtual bet</p>
+          </div>
+        </div>
       </CardHeader>
       
       <CardContent className="p-6 space-y-4">
         <div>
-          <Label className="text-sm font-medium mb-2 block">Select Game</Label>
+          <Label className="text-sm font-medium mb-2 block text-green-900 dark:text-green-100">Select Game</Label>
           <Select value={selectedGameId} onValueChange={setSelectedGameId}>
-            <SelectTrigger className="w-full">
+            <SelectTrigger className="w-full border-green-200 dark:border-green-800 focus:border-green-400 dark:focus:border-green-600">
               <SelectValue placeholder="Choose a game..." />
             </SelectTrigger>
-            <SelectContent className="">
+            <SelectContent>
               {games?.filter(g => g.status === "upcoming" || g.status === "scheduled").map((game) => (
                 <SelectItem key={game.id} value={game.id.toString()}>
                   {game.awayTeam} @ {game.homeTeam}
@@ -120,47 +179,40 @@ export function QuickBet() {
         </div>
         
         <div>
-          <Label className="text-sm font-medium mb-2 block">Bet Type</Label>
-          <div className="grid grid-cols-2 gap-2">
+          <Label className="text-sm font-medium mb-2 block text-green-900 dark:text-green-100">Bet Type</Label>
+          <div className="grid grid-cols-3 gap-2">
             <Button
               variant={betType === "spread" ? "default" : "outline"}
               onClick={() => setBetType("spread")}
-              className="bg-background border hover:border-primary"
+              className={betType === "spread" ? "bg-green-600 hover:bg-green-700" : "border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600"}
             >
               Spread
             </Button>
             <Button
               variant={betType === "moneyline" ? "default" : "outline"}
               onClick={() => setBetType("moneyline")}
-              className="bg-background border hover:border-primary"
+              className={betType === "moneyline" ? "bg-green-600 hover:bg-green-700" : "border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600"}
             >
               Moneyline
             </Button>
             <Button
               variant={betType === "total" ? "default" : "outline"}
               onClick={() => setBetType("total")}
-              className="bg-background border hover:border-primary"
+              className={betType === "total" ? "bg-green-600 hover:bg-green-700" : "border-green-200 dark:border-green-800 hover:border-green-400 dark:hover:border-green-600"}
             >
               Total
-            </Button>
-            <Button
-              variant={betType === "prop" ? "default" : "outline"}
-              onClick={() => setBetType("prop")}
-              className="bg-background border hover:border-primary"
-            >
-              Prop
             </Button>
           </div>
         </div>
 
         {selectedGame && betType && (
           <div>
-            <Label className="text-sm font-medium mb-2 block">Pick</Label>
+            <Label className="text-sm font-medium mb-2 block text-green-900 dark:text-green-100">Pick</Label>
             <Select value={pick} onValueChange={setPick}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Choose your pick..." />
+              <SelectTrigger className="w-full border-green-200 dark:border-green-800 focus:border-green-400 dark:focus:border-green-600">
+                <SelectValue placeholder="Select your pick..." />
               </SelectTrigger>
-              <SelectContent className="">
+              <SelectContent>
                 {getBetOptions().map((option) => (
                   <SelectItem key={option.value} value={option.value}>
                     {option.label}
@@ -170,31 +222,25 @@ export function QuickBet() {
             </Select>
           </div>
         )}
-        
+
         <div>
-          <Label className="text-sm font-medium mb-2 block">Bet Amount</Label>
-          <div className="relative">
-            <span className="absolute left-3 top-2 text-muted-foreground">$</span>
-            <Input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full bg-background border pl-8 pr-3 py-2 text-foreground focus:border-primary"
-              placeholder="100"
-            />
-          </div>
-          <div className="flex justify-between text-xs text-muted-foreground mt-1">
-            <span>Min: $10</span>
-            <span>Available: $12,450</span>
-          </div>
+          <Label className="text-sm font-medium mb-2 block text-green-900 dark:text-green-100">Bet Amount ($)</Label>
+          <Input
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Enter amount..."
+            className="border-green-200 dark:border-green-800 focus:border-green-400 dark:focus:border-green-600"
+          />
         </div>
-        
+
         <Button
           onClick={handlePlaceBet}
-          disabled={placeBetMutation.isPending}
-          className="w-full bg-blue-600 hover:bg-blue-700 py-3"
+          disabled={!selectedGameId || !betType || !pick || !amount || placeBetMutation.isPending}
+          className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white shadow-lg disabled:opacity-50"
         >
-          {placeBetMutation.isPending ? "Placing..." : "Place Bet"}
+          <DollarSign className="w-4 h-4 mr-2" />
+          {placeBetMutation.isPending ? "Placing Bet..." : "Place Virtual Bet"}
         </Button>
       </CardContent>
     </Card>
