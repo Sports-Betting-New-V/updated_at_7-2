@@ -72,7 +72,7 @@ export function Header() {
                     </div>
                   )}
                   <span className="hidden sm:block font-medium text-slate-900 dark:text-white">
-                    {user?.firstName || user?.email || "User"}
+                    {user?.username || "User"}
                   </span>
                 </div>
                 <Button
