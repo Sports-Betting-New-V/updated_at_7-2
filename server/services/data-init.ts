@@ -7,10 +7,13 @@ import { sportsDataService } from "./sports-data";
 export class DataInitService {
   async initializeData() {
     console.log("Initializing database with sample data...");
-    
+
     try {
       // Create default demo user if doesn't exist
-      const existingUser = await db.select().from(users).where(eq(users.id, "demo-user-1"));
+      const existingUser = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, "demo-user-1"));
       if (existingUser.length === 0) {
         await db.insert(users).values({
           id: "demo-user-1",
@@ -19,7 +22,7 @@ export class DataInitService {
           password: "demo123", // This would be hashed in real auth
           firstName: "Demo",
           lastName: "User",
-          bankroll: "10000.00"
+          bankroll: "10000.00",
         });
         console.log("Created default user");
       }
@@ -28,7 +31,7 @@ export class DataInitService {
       const existingGames = await db.select().from(games);
       if (existingGames.length === 0) {
         console.log("Creating sample games with predictions...");
-        
+
         const sampleGames = [
           {
             homeTeam: "Lakers",
@@ -47,7 +50,7 @@ export class DataInitService {
           {
             homeTeam: "Celtics",
             awayTeam: "Heat",
-            sport: "NBA", 
+            sport: "NBA",
             gameTime: new Date(Date.now() + 4 * 60 * 60 * 1000), // 4 hours from now
             status: "scheduled",
             homeSpread: "-7.0",
@@ -102,18 +105,23 @@ export class DataInitService {
           },
         ];
 
-        const insertedGames = await db.insert(games).values(sampleGames).returning();
+        const insertedGames = await db
+          .insert(games)
+          .values(sampleGames)
+          .returning();
         console.log(`Created ${insertedGames.length} sample games`);
 
         // Generate predictions for the games using fallback method to avoid API issues during init
         console.log("Generating predictions for games...");
-        const gamePredictions = insertedGames.map(game => 
-          predictionEngine.generateFallbackPrediction(game)
+        const gamePredictions = insertedGames.map((game) =>
+          predictionEngine.generateFallbackPrediction(game),
         );
 
         if (gamePredictions.length > 0) {
           await db.insert(predictions).values(gamePredictions);
-          console.log(`Created ${gamePredictions.length} predictions in database`);
+          console.log(
+            `Created ${gamePredictions.length} predictions in database`,
+          );
         }
 
         // Create some sample bets for demo user
