@@ -13,7 +13,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
 
   // Get current user - works with both authenticated and demo mode
-  app.get("/api/user", async (req: any, res) => {
+  app.get("/user", async (req: any, res) => {
     try {
       // If authenticated with email/password, get the real user
       if (req.isAuthenticated?.() && req.user?.id) {

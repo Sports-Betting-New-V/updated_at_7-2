@@ -82,32 +82,36 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/register", async (req, res, next) => {
+  app.post("/api/register", async (req, res) => {
     try {
       const { email, password, username } = req.body;
-      
+  
       if (!email || !password || !username) {
         return res.status(400).json({ message: "Email, password, and username are required" });
       }
-
+  
       const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
         return res.status(400).json({ message: "Email already exists" });
       }
-
+  
       const user = await storage.createUser({
         email,
         username,
         password: await hashPassword(password),
         bankroll: "10000",
       });
-
+  
       req.login(user, (err) => {
-        if (err) return next(err);
+        if (err) {
+          console.error("Error during login:", err); // Log login errors
+          return res.status(500).json({ message: "Failed to log in after registration" });
+        }
         res.status(201).json(user);
       });
     } catch (error) {
-      next(error);
+      console.error("Error during registration:", error); // Log registration errors
+      res.status(500).json({ message: "Internal server error" });
     }
   });
 
