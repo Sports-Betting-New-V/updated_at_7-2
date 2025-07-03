@@ -1,11 +1,18 @@
 import OpenAI from "openai";
 import { Game, InsertPrediction } from "@shared/schema";
+import { predictionEngine } from "./prediction-engine";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
 
 export class OpenAIService {
   async generatePrediction(game: Game): Promise<InsertPrediction> {
+    // If OpenAI API key is not available, use fallback prediction engine
+    if (!openai) {
+      console.log("OpenAI API key not provided, using fallback prediction engine");
+      return predictionEngine.generatePrediction(game);
+    }
+    
     try {
       const prompt = `Analyze this ${game.sport} game and provide a betting recommendation:
 
@@ -26,7 +33,7 @@ Provide a JSON response with:
 
 Focus on finding real betting edges based on line value, public vs sharp money, situational spots, and statistical advantages.`;
 
-      const response = await openai.chat.completions.create({
+      const response = await openai!.chat.completions.create({
         model: "gpt-4o",
         messages: [
           {
@@ -93,12 +100,18 @@ Focus on finding real betting edges based on line value, public vs sharp money, 
   }
 
   async analyzeBettingTrends(games: Game[]): Promise<string> {
+    // If OpenAI API key is not available, use fallback analysis
+    if (!openai) {
+      console.log("OpenAI API key not provided, using fallback betting analysis");
+      return predictionEngine.getMarketInsights(games);
+    }
+    
     try {
       const gamesData = games.map(g => 
         `${g.awayTeam} @ ${g.homeTeam} (${g.sport}) - Spread: ${g.homeSpread}/${g.awaySpread}, Total: ${g.totalPoints}`
       ).join('\n');
 
-      const response = await openai.chat.completions.create({
+      const response = await openai!.chat.completions.create({
         model: "gpt-4o",
         messages: [
           {
