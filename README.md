@@ -2,14 +2,10 @@
 
 A comprehensive full-stack sports betting simulator with AI-powered predictions, real-time sports data, and virtual currency management.
 
-## 🚀 Quick Start (Local Setup)
+## 🚀 Quick Start Options
 
-### Prerequisites
-- Node.js 18+ 
-- PostgreSQL 12+
-- OpenAI API Key (optional, for AI predictions)
-
-### Setup Steps
+### Option A: Cloud Database (Recommended)
+**Prerequisites:** Only Node.js 18+
 
 1. **Download & Install**
 ```bash
@@ -20,25 +16,29 @@ npm install
 
 2. **Create Environment File**
 ```bash
-# Create .env file with:
-DATABASE_URL=postgresql://username:password@localhost:5432/betting_simulator
+# Create .env file with your cloud database:
+DATABASE_URL=postgresql://your-cloud-db-url
 SESSION_SECRET=your-random-secret-key
 OPENAI_API_KEY=your-openai-api-key
 NODE_ENV=development
 ```
 
-3. **Setup Database**
+3. **Setup Database Schema**
 ```bash
-# Create database in PostgreSQL
-createdb betting_simulator
-
-# Push schema
 npm run db:push
 ```
 
 4. **Start Application**
 ```bash
 npm run dev
+```
+
+### Option B: Local PostgreSQL
+**Prerequisites:** Node.js 18+ and PostgreSQL 12+
+
+Follow the same steps but use a local database URL:
+```bash
+DATABASE_URL=postgresql://username:password@localhost:5432/betting_simulator
 ```
 
 Visit: http://localhost:5000
@@ -61,9 +61,12 @@ Visit: http://localhost:5000
 - **AI**: OpenAI GPT-4o for prediction analysis
 - **Sports Data**: ESPN Sports API integration
 
-## 📖 Detailed Setup
+## 📖 Detailed Setup Guides
 
-See [LOCAL_SETUP.md](./LOCAL_SETUP.md) for comprehensive setup instructions, troubleshooting, and deployment guide.
+- **[CLOUD_SETUP.md](./CLOUD_SETUP.md)** - Setup with cloud PostgreSQL (Neon, AWS RDS, etc.)
+- **[LOCAL_SETUP.md](./LOCAL_SETUP.md)** - Setup with local PostgreSQL installation
+
+Both guides include troubleshooting and deployment instructions.
 
 ## 🔑 API Keys
 
